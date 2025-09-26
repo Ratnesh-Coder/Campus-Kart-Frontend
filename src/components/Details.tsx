@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Product } from "./Main"; // Assuming Product interface is exported from Main.tsx
+import { Product } from "./Main";
 
 const Details = () => {
-  const { productId } = useParams<{ productId: string }>();
+  const { id } = useParams<{ id: string }>(); // This now correctly matches the route
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -11,8 +11,7 @@ const Details = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        // NOTE: This backend endpoint doesn't exist yet. We will build it next.
-        const response = await fetch(`http://localhost:5000/api/products/${productId}`);
+        const response = await fetch(`http://localhost:5000/api/products/${id}`); // Use id here
         if (!response.ok) {
           throw new Error('Product not found');
         }
@@ -25,10 +24,10 @@ const Details = () => {
       }
     };
 
-    if (productId) {
+    if (id) {
       fetchProduct();
     }
-  }, [productId]);
+  }, [id]); // The dependency is now id
 
   if (loading) {
     return <div className="text-center py-20 font-semibold">Loading...</div>;
@@ -48,12 +47,11 @@ const Details = () => {
 
   return (
     <div className="bg-gray-50 py-12">
-      {/* The rest of your beautiful details page JSX goes here... */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
           <div className="bg-white p-6 rounded-lg shadow-md">
             <img
-              src={product.image}
+              src={product.imageUrl}
               alt={product.title}
               className="w-full h-96 object-contain rounded-md"
             />

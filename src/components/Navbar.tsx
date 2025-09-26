@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import CampusKart from "../assets/CampusKart.png";
+import BWUKart from "../assets/CampusKart.png"; // Make sure this is your new logo file
 import Login from "./Login";
 import MenuIcon from "./MenuIcon";
 import CloseIcon from "./CloseIcon";
 import SearchIcon from "./SearchIcon"; 
-import { useAuth } from "../context/AuthContext"; // Import the useAuth hook
+import { useAuth } from "../context/AuthContext";
 
 type searchProp = {
   setSearch: any;
@@ -14,27 +14,29 @@ type searchProp = {
 const Navbar = (props: searchProp) => {
   const [loginPop, setLoginPop] = useState(false);
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, logout } = useAuth(); // Get user and logout from the global context
+  const { user, logout } = useAuth();
 
   return (
     <>
       <nav className="bg-slate-100 shadow-md">
+        {/* Increased navbar height from h-16 to h-20 */}
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-20"> 
             {/* Logo */}
             <div className="flex-shrink-0">
               <Link to="/">
-                <img src={CampusKart} alt="Campus Kart" className="w-24 h-auto transition-transform duration-200 ease-in-out hover:scale-105" />
+                {/* Increased logo size from h-12 to h-16 */}
+                <img src={BWUKart} alt="Campus Kart Logo" className="h-16 w-auto transition-transform duration-200 ease-in-out hover:scale-105" />
               </Link>
             </div>
 
             {/* Search Bar (Desktop) */}
             <div className="hidden md:flex flex-grow max-w-xl">
-              <div className="flex h-10 border-2 border-gray-300 rounded-md bg-white flex-grow">
+              <div className="flex h-12 border-2 border-gray-300 rounded-md bg-white flex-grow">
                 <input
                   onChange={(e) => props?.setSearch(e.target.value)}
                   placeholder="Find books, calculators, and more..."
-                  className="ml-3 w-full outline-none bg-transparent"
+                  className="ml-4 w-full outline-none bg-transparent text-lg"
                 />
                 <button className="bg-gray-800 px-4 flex items-center justify-center rounded-r-md">
                   <SearchIcon />

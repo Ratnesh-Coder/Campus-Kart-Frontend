@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import Home from "./Home";
 
 export interface Product {
-  id: string;
+  _id: string;
   title: string;
   price: number;
-  image: string;
+  imageUrl: string;
   category: string;
   description: string;
+  sellerId: string;
+  postDate: string;
 }
 
 type MainProps = {
@@ -16,15 +18,21 @@ type MainProps = {
 }
 
 const Main = (props: MainProps) => {
+  const { search, menu } = props;
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoading(true);
+      setError(null);
       try {
-        // We will replace this with a real API call soon
-        const response = await fetch('http://localhost:5000/api/products');
+        const params = new URLSearchParams();
+        if (search) params.append('search', search);
+        if (menu) params.append('category', menu);
+        
+        const response = await fetch(`http://localhost:5000/api/products?${params.toString()}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -38,13 +46,11 @@ const Main = (props: MainProps) => {
     };
 
     fetchProducts();
-  }, []);
+  }, [search, menu]);
 
   return (
     <Home
       products={products}
-      search={props.search}
-      menu={props.menu}
       loading={loading}
       error={error}
     />

@@ -1,13 +1,14 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
-// Define the shape of the user object and context
+// Define the shape of the user object
 interface User {
-  id: string;
+  _id: string;
   name: string;
   email: string;
-  avatar?: string;  
+  avatar?: string;
 }
 
+// Define the shape of the context
 interface AuthContextType {
   user: User | null;
   token: string | null;
@@ -15,21 +16,23 @@ interface AuthContextType {
   logout: () => void;
 }
 
-// Create the context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Create the provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
 
-  // This effect will run once on startup to check for a logged-in user
+  // On initial load, check local storage for existing session
   useEffect(() => {
-    const storedToken = localStorage.getItem('authToken');
-    const storedUser = localStorage.getItem('authUser');
-    if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedToken = localStorage.getItem('authToken');
+      const storedUser = localStorage.getItem('authUser');
+      if (storedToken && storedUser) {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error("Failed to parse auth user from local storage", error);
     }
   }, []);
 
@@ -54,7 +57,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// Create a custom hook for easy access to the context
+// Custom hook to easily use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {

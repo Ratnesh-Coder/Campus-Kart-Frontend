@@ -18,7 +18,7 @@ const App = () => {
     <Menubar setMenu={setMenu} />
     <Routes>
       <Route path="/" element={<Main search={search} menu={menu} />} />
-      <Route path="/product/:productId" element={<Details />} />
+      <Route path="/product/:id" element={<Details />} />
       <Route path="/sell" element={<Sell />} />
       <Route path="/profile" element={<Profile />} />
     </Routes>

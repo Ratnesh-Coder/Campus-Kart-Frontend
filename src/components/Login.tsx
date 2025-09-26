@@ -1,29 +1,31 @@
 import { useState } from 'react';
 import guitar from "../assets/guitar.png";
 import google from "../assets/google.png";
-import { useAuth } from '../context/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../context/AuthContext';
 
 type PopupProp = {
   setLoginPop: (value: boolean) => void;
 };
 
 const Login = (props: PopupProp) => {
-  const [formMode, setFormMode] = useState<'options' | 'login' | 'signup'>('options');
+  const [formMode, setFormMode] = useState<'options' | 'login' | 'signup' | 'forgot'>('options');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState(''); // For success/info messages
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth(); // Get the global login function
+  const { login } = useAuth();
 
   const handleGoogleSignin = () => {
-    alert("Google Sign-in backend not connected yet!");
+    alert("Google Sign-in is not yet implemented.");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setMessage('');
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -32,11 +34,8 @@ const Login = (props: PopupProp) => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Login failed.');
-      
-      // Use the global login function
-      login(data.user, data.token); 
-      
-      props.setLoginPop(false); // Close modal on success
+      login(data.user, data.token);
+      props.setLoginPop(false);
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -48,6 +47,7 @@ const Login = (props: PopupProp) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setMessage('');
     try {
       const response = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
@@ -56,22 +56,65 @@ const Login = (props: PopupProp) => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Sign-up failed.');
-      
-      alert('Sign-up successful! You can now log in.');
+      setMessage('Sign-up successful! You can now log in.');
       setFormMode('login');
-    } catch (err: any) {
+    } catch (err: any) { // Corrected line
       setError(err.message);
     } finally {
       setIsLoading(false);
     }
   };
-  
-  // The rest of the component (renderForm, and the main return) remains unchanged.
-  // Make sure it's the same as the code from Step 40.
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError('');
+  setMessage('');
+  try {
+    const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      throw new Error(data.message || 'An error occurred.');
+    }
+    // Always show the generic success message from the backend
+    setMessage(data.message);
+  } catch (err: any) {
+    setError(err.message);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
   const renderForm = () => {
+    if (formMode === 'forgot') {
+      return (
+        <form onSubmit={handleForgotPassword} className="space-y-4">
+          <h4 className="font-semibold text-center text-gray-800">Reset Your Password</h4>
+          <p className="text-sm text-center text-gray-500">Enter your email address and we will send you a link to reset your password.</p>
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {message && <p className="text-green-600 text-sm text-center">{message}</p>}
+          <div>
+            <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
+          </div>
+          <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300">
+            {isLoading ? 'Sending...' : 'Send Reset Link'}
+          </button>
+          <button type="button" onClick={() => { setFormMode('login'); setError(''); setMessage(''); }} className="w-full text-center text-sm text-blue-600 hover:underline">
+            Back to Login
+          </button>
+        </form>
+      );
+    }
+
     if (formMode === 'login' || formMode === 'signup') {
       return (
         <form onSubmit={formMode === 'login' ? handleLogin : handleSignUp} className="space-y-4">
+          {message && <p className="text-green-600 text-sm text-center">{message}</p>}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           {formMode === 'signup' && (
             <div>
@@ -87,15 +130,23 @@ const Login = (props: PopupProp) => {
             <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
           </div>
+          {formMode === 'login' && (
+              <div className="text-right text-sm">
+                  <button type="button" onClick={() => { setFormMode('forgot'); setError(''); setMessage(''); }} className="font-medium text-blue-600 hover:underline">
+                      Forgot password?
+                  </button>
+              </div>
+          )}
           <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300">
             {isLoading ? 'Processing...' : (formMode === 'login' ? 'Login' : 'Sign Up')}
           </button>
-          <button type="button" onClick={() => setFormMode(formMode === 'login' ? 'signup' : 'login')} className="w-full text-center text-sm text-blue-600 hover:underline">
+          <button type="button" onClick={() => { setFormMode(formMode === 'login' ? 'signup' : 'login'); setError(''); setMessage(''); }} className="w-full text-center text-sm text-blue-600 hover:underline">
             {formMode === 'login' ? "Don't have an account? Sign Up" : "Already have an account? Login"}
           </button>
         </form>
       );
     }
+
     return (
       <>
         <button onClick={handleGoogleSignin} className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
@@ -128,14 +179,12 @@ const Login = (props: PopupProp) => {
               <div className="text-center">
                 <img src={guitar} className="w-20 h-20 mx-auto" alt="Guitar icon"/>
                 <h3 className="mt-4 text-lg font-medium text-gray-900">
-                  {formMode === 'signup' ? 'Create Your Account' : 'Welcome to BWU-Kart'}
+                  {formMode === 'signup' ? 'Create Your Account' : formMode === 'forgot' ? 'Reset Password' : 'Welcome to Campus Kart'}
                 </h3>
               </div>
-              <div className="mt-8 space-y-4">
-                {renderForm()}
-              </div>
-               <p className="mt-6 text-xs text-center text-gray-500">
-                By continuing, you agree to Campus Kart's <a href="#" className="font-medium text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="font-medium text-blue-600 hover:underline">Privacy Policy</a>.
+              <div className="mt-8 space-y-4">{renderForm()}</div>
+              <p className="mt-6 text-xs text-center text-gray-500">
+                By continuing, you agree to Campus Kart's <a href="#" className="font-medium text-blue-600 hover:underline">Terms of Service</a>.
               </p>
             </div>
           </div>
