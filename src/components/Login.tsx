@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 import guitar from "../assets/guitar.png";
 import google from "../assets/google.png";
 import { useAuth } from '../context/AuthContext';
@@ -12,20 +13,16 @@ const Login = (props: PopupProp) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState(''); // For success/info messages
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
   const handleGoogleSignin = () => {
-    alert("Google Sign-in is not yet implemented.");
+    toast.error("Google Sign-in is not yet implemented.");
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
-    setMessage('');
     try {
       const response = await fetch('http://localhost:5000/api/auth/login', {
         method: 'POST',
@@ -34,10 +31,12 @@ const Login = (props: PopupProp) => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Login failed.');
+      
+      toast.success('Login successful!');
       login(data.user, data.token);
       props.setLoginPop(false);
     } catch (err: any) {
-      setError(err.message);
+      toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
@@ -46,8 +45,6 @@ const Login = (props: PopupProp) => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
-    setMessage('');
     try {
       const response = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
@@ -56,47 +53,43 @@ const Login = (props: PopupProp) => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Sign-up failed.');
-      setMessage('Sign-up successful! You can now log in.');
+      
+      toast.success('Sign-up successful! You can now log in.');
       setFormMode('login');
-    } catch (err: any) { // Corrected line
-      setError(err.message);
+    } catch (err: any) {
+      toast.error(err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleForgotPassword = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsLoading(true);
-  setError('');
-  setMessage('');
-  try {
-    const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      throw new Error(data.message || 'An error occurred.');
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.message || 'An error occurred.');
+      }
+      toast.success(data.message);
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setIsLoading(false);
     }
-    // Always show the generic success message from the backend
-    setMessage(data.message);
-  } catch (err: any) {
-    setError(err.message);
-  } finally {
-    setIsLoading(false);
-  }
-};
+  };
 
   const renderForm = () => {
     if (formMode === 'forgot') {
       return (
         <form onSubmit={handleForgotPassword} className="space-y-4">
           <h4 className="font-semibold text-center text-gray-800">Reset Your Password</h4>
-          <p className="text-sm text-center text-gray-500">Enter your email address and we will send you a link to reset your password.</p>
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-          {message && <p className="text-green-600 text-sm text-center">{message}</p>}
+          <p className="text-sm text-center text-gray-500">Enter your email and we'll send a reset link.</p>
           <div>
             <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
@@ -104,7 +97,7 @@ const Login = (props: PopupProp) => {
           <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300">
             {isLoading ? 'Sending...' : 'Send Reset Link'}
           </button>
-          <button type="button" onClick={() => { setFormMode('login'); setError(''); setMessage(''); }} className="w-full text-center text-sm text-blue-600 hover:underline">
+          <button type="button" onClick={() => setFormMode('login')} className="w-full text-center text-sm text-blue-600 hover:underline">
             Back to Login
           </button>
         </form>
@@ -114,8 +107,6 @@ const Login = (props: PopupProp) => {
     if (formMode === 'login' || formMode === 'signup') {
       return (
         <form onSubmit={formMode === 'login' ? handleLogin : handleSignUp} className="space-y-4">
-          {message && <p className="text-green-600 text-sm text-center">{message}</p>}
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           {formMode === 'signup' && (
             <div>
               <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)}
@@ -132,7 +123,7 @@ const Login = (props: PopupProp) => {
           </div>
           {formMode === 'login' && (
               <div className="text-right text-sm">
-                  <button type="button" onClick={() => { setFormMode('forgot'); setError(''); setMessage(''); }} className="font-medium text-blue-600 hover:underline">
+                  <button type="button" onClick={() => setFormMode('forgot')} className="font-medium text-blue-600 hover:underline">
                       Forgot password?
                   </button>
               </div>
@@ -140,7 +131,7 @@ const Login = (props: PopupProp) => {
           <button type="submit" disabled={isLoading} className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300">
             {isLoading ? 'Processing...' : (formMode === 'login' ? 'Login' : 'Sign Up')}
           </button>
-          <button type="button" onClick={() => { setFormMode(formMode === 'login' ? 'signup' : 'login'); setError(''); setMessage(''); }} className="w-full text-center text-sm text-blue-600 hover:underline">
+          <button type="button" onClick={() => setFormMode(formMode === 'login' ? 'signup' : 'login')} className="w-full text-center text-sm text-blue-600 hover:underline">
             {formMode === 'login' ? "Don't have an account? Sign Up" : "Already have an account? Login"}
           </button>
         </form>

@@ -2,21 +2,43 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Product } from "./Main";
 
+// New: Define a type for the seller's public info
+interface Seller {
+  name: string;
+  email: string;
+}
+
 const Details = () => {
-  const { id } = useParams<{ id: string }>(); // This now correctly matches the route
+  const { id } = useParams<{ id: string }>(); // Changed to 'id' to match router
   const [product, setProduct] = useState<Product | null>(null);
+  const [seller, setSeller] = useState<Seller | null>(null); // New state for seller info
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndSeller = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`); // Use id here
-        if (!response.ok) {
+        if (!id) {
+            throw new Error("Product ID not found in URL.");
+        }
+        // Step 1: Fetch the product details
+        const productResponse = await fetch(`http://localhost:5000/api/products/${id}`);
+        if (!productResponse.ok) {
           throw new Error('Product not found');
         }
-        const data = await response.json();
-        setProduct(data);
+        const productData: Product = await productResponse.json();
+        setProduct(productData);
+
+        // Step 2: Fetch the seller's details using the sellerId from the product
+        if (productData.sellerId) {
+          const sellerResponse = await fetch(`http://localhost:5000/api/users/${productData.sellerId}`);
+          if (!sellerResponse.ok) {
+              throw new Error('Could not fetch seller information.');
+          }
+          const sellerData: Seller = await sellerResponse.json();
+          setSeller(sellerData);
+        }
+
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -24,10 +46,8 @@ const Details = () => {
       }
     };
 
-    if (id) {
-      fetchProduct();
-    }
-  }, [id]); // The dependency is now id
+    fetchProductAndSeller();
+  }, [id]);
 
   if (loading) {
     return <div className="text-center py-20 font-semibold">Loading...</div>;
@@ -70,11 +90,20 @@ const Details = () => {
                 {product.description || "No description provided."}
               </p>
             </div>
-            <div className="mt-8">
-                <button className="w-full bg-green-600 text-white py-3 rounded-md text-lg font-semibold hover:bg-green-700 transition">
-                    Contact Seller
-                </button>
-            </div>
+
+            {/* New: Display Seller Information */}
+            {seller && (
+                <div className="mt-8 border-t pt-6">
+                    <h2 className="text-lg font-semibold text-gray-800">Seller Information</h2>
+                    <p className="mt-2 text-gray-600">
+                        <strong>Name:</strong> {seller.name}
+                    </p>
+                    <a href={`mailto:${seller.email}?subject=Inquiry about ${product.title}`}
+                       className="mt-4 w-full inline-block text-center bg-green-600 text-white py-3 rounded-md text-lg font-semibold hover:bg-green-700 transition">
+                       Contact Seller
+                    </a>
+                </div>
+            )}
           </div>
         </div>
       </div>

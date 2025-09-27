@@ -45,7 +45,13 @@ const Main = (props: MainProps) => {
       }
     };
 
-    fetchProducts();
+    // We use a timeout to delay the fetch slightly after the user stops typing
+    const debounceFetch = setTimeout(() => {
+        fetchProducts();
+    }, 300); // 300ms delay
+
+    // Cleanup function to clear the timeout if the user types again
+    return () => clearTimeout(debounceFetch);
   }, [search, menu]);
 
   return (

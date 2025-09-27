@@ -1,12 +1,15 @@
-import { Route, Routes } from "react-router-dom"
-import Main from "./components/Main"
-import Details from "./components/Details"
-import Sell from "./components/Sell"
-import Navbar from "./components/Navbar"
-import Footer from "./components/Footer"
-import Menubar from "./components/Menubar"
+import { useState } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Toaster } from 'react-hot-toast';
+import Main from "./components/Main";
+import Details from "./components/Details";
+import Sell from "./components/Sell";
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import Menubar from "./components/Menubar";
 import Profile from "./components/Profile";
-import { useState } from "react"
+import ResetPassword from "./components/ResetPassword";
+import EditProduct from "./components/EditProduct";
 
 const App = () => {
   const [search, setSearch] = useState<string>("");
@@ -14,6 +17,7 @@ const App = () => {
 
   return (
    <>
+   <Toaster position="top-center" reverseOrder={false} />
     <Navbar setSearch={setSearch} />
     <Menubar setMenu={setMenu} />
     <Routes>
@@ -21,6 +25,8 @@ const App = () => {
       <Route path="/product/:id" element={<Details />} />
       <Route path="/sell" element={<Sell />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Route path="/edit-product/:id" element={<EditProduct />} />
     </Routes>
     <Footer />
    </>

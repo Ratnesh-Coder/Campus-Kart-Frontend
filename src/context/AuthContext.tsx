@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 
 // Define the shape of the user object
-interface User {
+export interface User {
   _id: string;
   name: string;
   email: string;
