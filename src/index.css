@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
-@tailwind utilities; 
+@tailwind utilities;
+
+body {
+  @apply bg-neutral-100 text-neutral-800 antialiased;
+}

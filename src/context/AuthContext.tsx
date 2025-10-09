@@ -6,6 +6,13 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
+  // New University Fields
+  department?: string;
+  programName?: string;
+  section?: string;
+  rollNumber?: string;
+  studentCode?: string;
+  registrationNumber?: string;
 }
 
 // Define the shape of the context
@@ -14,6 +21,7 @@ interface AuthContextType {
   token: string | null;
   login: (userData: User, token: string) => void;
   logout: () => void;
+  updateUser: (userData: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,8 +58,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem('authToken');
   };
 
+  // --- THIS IS THE MISSING FUNCTION ---
+  const updateUser = (userData: User) => {
+    setUser(userData); // Update the user in the component's state
+    localStorage.setItem('authUser', JSON.stringify(userData)); // Update the user in local storage
+  };
+  // ------------------------------------
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

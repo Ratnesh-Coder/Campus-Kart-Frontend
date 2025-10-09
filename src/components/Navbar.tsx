@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import BWUKart from "../assets/CampusKart.png"; // Make sure this is your new logo file
-import Login from "./Login";
-import MenuIcon from "./MenuIcon";
-import CloseIcon from "./CloseIcon";
-import SearchIcon from "./SearchIcon"; 
 import { useAuth } from "../context/AuthContext";
+import Login from "./Login";
+import CampusKart from "../assets/CampusKart.png";
 
 type searchProp = {
   setSearch: any;
@@ -18,54 +15,52 @@ const Navbar = (props: searchProp) => {
 
   return (
     <>
-      <nav className="bg-slate-100 shadow-md">
-        {/* Increased navbar height from h-16 to h-20 */}
+      <nav className="bg-white sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-20"> 
+          <div className="flex items-center justify-between h-16">
+            
             {/* Logo */}
             <div className="flex-shrink-0">
-              <Link to="/">
-                {/* Increased logo size from h-12 to h-16 */}
-                <img src={BWUKart} alt="Campus Kart Logo" className="h-16 w-auto transition-transform duration-200 ease-in-out hover:scale-105" />
+              <Link to="/" className="flex items-center space-x-2">
+                <img src={CampusKart} alt="Campus Kart Logo" className="h-16 w-auto transition-transform duration-200 ease-in-out hover:scale-105" />
               </Link>
             </div>
 
             {/* Search Bar (Desktop) */}
-            <div className="hidden md:flex flex-grow max-w-xl">
-              <div className="flex h-12 border-2 border-gray-300 rounded-md bg-white flex-grow">
+            <div className="hidden md:flex flex-grow max-w-xl mx-4">
+              <div className="relative w-full">
                 <input
+                  type="search"
                   onChange={(e) => props?.setSearch(e.target.value)}
                   placeholder="Find books, calculators, and more..."
-                  className="ml-4 w-full outline-none bg-transparent text-lg"
-                />
-                <button className="bg-gray-800 px-4 flex items-center justify-center rounded-r-md">
+                  className="w-full h-10 pl-4 pr-10 border-2 border-neutral-400 rounded-full focus:outline-none focus:border-black"/>
+                <div className="absolute top-0 right-0 h-10 w-10 flex items-center justify-center text-neutral-600">
                   <SearchIcon />
-                </button>
-              </div>
+                </div>
+              </div>    
             </div>
 
             {/* Right Side Links (Desktop) */}
             <div className="hidden md:flex items-center space-x-6">
               {user ? (
                 <>
-                  <Link to="/profile" className="font-bold text-lg hover:underline">
+                  <Link to="/profile" className="font-semibold text-neutral-600 hover:text-black">
                     Profile
                   </Link>
-                  <button onClick={logout} className="font-bold text-lg underline hover:no-underline">
+                  <button onClick={logout} className="font-semibold text-neutral-600 hover:text-black">
                     Logout
                   </button>
                 </>
               ) : (
                 <div
                   onClick={() => setLoginPop(!loginPop)}
-                  className="cursor-pointer font-bold text-lg underline hover:no-underline"
-                >
+                  className="cursor-pointer font-semibold text-neutral-600 hover:text-black">
                   Login
                 </div>
               )}
               <Link
                 to="/sell"
-                className="bg-yellow-500 text-white px-4 py-2 rounded-full font-bold hover:bg-yellow-600 transition"
+                className="bg-secondary text-white px-4 py-2 rounded-full font-bold transition-transform hover:scale-105"
               >
                 + SELL
               </Link>
@@ -73,7 +68,7 @@ const Navbar = (props: searchProp) => {
 
             {/* Hamburger Button (Mobile) */}
             <div className="md:hidden flex items-center">
-              <button onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
+              <button onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="text-neutral-600">
                 {isMobileMenuOpen ? <CloseIcon /> : <MenuIcon />}
               </button>
             </div>
@@ -83,48 +78,42 @@ const Navbar = (props: searchProp) => {
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden bg-white pb-4 px-4 space-y-4">
-             <div className="flex h-10 border-2 border-gray-300 rounded-md bg-white">
+             <div className="relative w-full">
                 <input
+                  type="search"
                   onChange={(e) => props?.setSearch(e.target.value)}
-                  placeholder="Search items..."
-                  className="ml-3 w-full outline-none bg-transparent"
+                  placeholder="Search..."
+                  className="w-full h-10 pl-4 pr-10 border-2 border-neutral-200 rounded-full"
                 />
-                <button className="bg-gray-800 px-4 flex items-center justify-center rounded-r-md">
+                <div className="absolute top-0 right-0 h-10 w-10 flex items-center justify-center text-neutral-500">
                   <SearchIcon />
-                </button>
+                </div>
               </div>
-            {user ? (
-              <>
-                <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="block font-bold text-lg">
-                  Profile
-                </Link>
-                <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left font-bold text-lg">
-                  Logout
-                </button>
-              </>
-            ) : (
-              <div
-                onClick={() => { setLoginPop(!loginPop); setMobileMenuOpen(false); }}
-                className="block cursor-pointer font-bold text-lg"
-              >
-                Login
-              </div>
-            )}
-            <Link
-              to="/sell"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block bg-yellow-500 text-white text-center px-4 py-2 rounded-full font-bold"
-            >
-              + SELL
-            </Link>
+              {user ? (
+                <>
+                  <Link to="/profile" onClick={() => setMobileMenuOpen(false)} className="block py-2 font-semibold text-neutral-600">Profile</Link>
+                  <button onClick={() => { logout(); setMobileMenuOpen(false); }} className="block w-full text-left py-2 font-semibold text-neutral-600">Logout</button>
+                </>
+              ) : (
+                 <button onClick={() => { setLoginPop(true); setMobileMenuOpen(false); }} className="block w-full text-left py-2 font-semibold text-neutral-600">Login</button>
+              )}
           </div>
         )}
       </nav>
-
-      {/* Login Popup */}
       {loginPop && <Login setLoginPop={setLoginPop} />}
     </>
   );
 };
+
+// NEW: Icon components are now defined directly within Navbar.tsx for simplicity.
+const SearchIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+);
+const MenuIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+);
+const CloseIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+);
 
 export default Navbar;

@@ -1,16 +1,6 @@
 import { useEffect, useState } from "react";
 import Home from "./Home";
-
-export interface Product {
-  _id: string;
-  title: string;
-  price: number;
-  imageUrl: string;
-  category: string;
-  description: string;
-  sellerId: string;
-  postDate: string;
-}
+import { Product } from "../types"; 
 
 type MainProps = {
   search: string;
@@ -48,7 +38,7 @@ const Main = (props: MainProps) => {
     // We use a timeout to delay the fetch slightly after the user stops typing
     const debounceFetch = setTimeout(() => {
         fetchProducts();
-    }, 300); // 300ms delay
+    }, 500);
 
     // Cleanup function to clear the timeout if the user types again
     return () => clearTimeout(debounceFetch);

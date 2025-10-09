@@ -10,6 +10,7 @@ import Menubar from "./components/Menubar";
 import Profile from "./components/Profile";
 import ResetPassword from "./components/ResetPassword";
 import EditProduct from "./components/EditProduct";
+import EditProfile from "./components/EditProfile";
 
 const App = () => {
   const [search, setSearch] = useState<string>("");
@@ -27,6 +28,7 @@ const App = () => {
       <Route path="/profile" element={<Profile />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       <Route path="/edit-product/:id" element={<EditProduct />} />
+      <Route path="/edit-profile" element={<EditProfile />} />
     </Routes>
     <Footer />
    </>

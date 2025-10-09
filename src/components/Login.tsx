@@ -10,9 +10,18 @@ type PopupProp = {
 
 const Login = (props: PopupProp) => {
   const [formMode, setFormMode] = useState<'options' | 'login' | 'signup' | 'forgot'>('options');
+
+  // States for all form fields
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [department, setDepartment] = useState('');
+  const [programName, setProgramName] = useState('');
+  const [section, setSection] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
+  const [studentCode, setStudentCode] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
+
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
 
@@ -49,7 +58,10 @@ const Login = (props: PopupProp) => {
       const response = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ 
+          name, email, password,
+          department, programName, section, rollNumber, studentCode, registrationNumber
+        }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Sign-up failed.');
@@ -107,20 +119,40 @@ const Login = (props: PopupProp) => {
     if (formMode === 'login' || formMode === 'signup') {
       return (
         <form onSubmit={formMode === 'login' ? handleLogin : handleSignUp} className="space-y-4">
+          {/* --- Basic Fields --- */}
           {formMode === 'signup' && (
-            <div>
-              <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
-            </div>
+            <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required />
           )}
-          <div>
-            <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
-          </div>
-          <div>
-            <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required />
-          </div>
+          <input type="email" placeholder="University Email Address" value={email} onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required />
+          <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" required />
+          
+          {/* --- NEW: University Specific Fields (only on signup) --- */}
+          {formMode === 'signup' && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" placeholder="Department" value={department} onChange={(e) => setDepartment(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+                <input type="text" placeholder="Program Name" value={programName} onChange={(e) => setProgramName(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" placeholder="Section" value={section} onChange={(e) => setSection(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+                <input type="text" placeholder="Roll Number" value={rollNumber} onChange={(e) => setRollNumber(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <input type="text" placeholder="Student Code" value={studentCode} onChange={(e) => setStudentCode(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+                <input type="text" placeholder="Registration Number" value={registrationNumber} onChange={(e) => setRegistrationNumber(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm" />
+              </div>
+            </>
+          )}
+
           {formMode === 'login' && (
               <div className="text-right text-sm">
                   <button type="button" onClick={() => setFormMode('forgot')} className="font-medium text-blue-600 hover:underline">
