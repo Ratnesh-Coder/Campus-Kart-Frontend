@@ -85,14 +85,14 @@ const Profile = () => {
             <div className="flex items-center space-x-6">
               <img className="h-24 w-24 rounded-full" src={user.avatar || 'https://via.placeholder.com/150'} alt="User Avatar" />
               <div className="text-center sm:text-left">
-                <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
-                <p className="text-gray-600">{user.email}</p>
+                <h1 className="text-3xl font-bold text-neutral-900">{user.name}</h1>
+                <p className="text-neutral-600">{user.email}</p>
               </div>
             </div>
           </div>
         </div>
         {/* NEW: Edit Profile Button */}
-            <Link to="/edit-profile" className="mt-4 sm:mt-0 bg-gray-200 text-gray-700 px-4 py-2 rounded-md font-semibold text-sm hover:bg-gray-300 transition">
+            <Link to="/edit-profile" className="mt-4 sm:mt-0 bg-neutral-200 text-neutral-700 px-4 py-2 rounded-lg font-semibold text-sm hover:bg-neutal-300 transition">
               Edit Profile
             </Link>
 
@@ -103,9 +103,9 @@ const Profile = () => {
                 {user.department && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Department</dt><dd className="mt-1 text-gray-900">{user.department}</dd></div>}
                 {user.programName && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Program</dt><dd className="mt-1 text-gray-900">{user.programName}</dd></div>}
                 {user.section && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Section</dt><dd className="mt-1 text-gray-900">{user.section}</dd></div>}
-                {user.rollNumber && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Roll Number</dt><dd className="mt-1 text-gray-900">{user.rollNumber}</dd></div>}
+                {user.rollNumber && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">University Roll Number</dt><dd className="mt-1 text-gray-900">{user.rollNumber}</dd></div>}
                 {user.studentCode && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Student Code</dt><dd className="mt-1 text-gray-900">{user.studentCode}</dd></div>}
-                {user.registrationNumber && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">Registration No.</dt><dd className="mt-1 text-gray-900">{user.registrationNumber}</dd></div>}
+                {user.registrationNumber && <div className="flex flex-col"><dt className="text-sm font-medium text-gray-500">University Registration No.</dt><dd className="mt-1 text-gray-900">{user.registrationNumber}</dd></div>}
             </dl>
         </div>
 
