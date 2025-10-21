@@ -287,9 +287,9 @@ const Home = ({ products, loading, error }: HomeProps) => {
             <span className="block">Ready to dive in?</span>
             <span className="block text-secondary">Join our campus movement today.</span>
           </h2>
-          <Link to="/sell" className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark sm:w-auto">
-            Sell an Item
-          </Link>
+          <a href="https://www.instagram.com/the_campus_kart?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-full text-white bg-primary hover:bg-primary-dark sm:w-auto transition-transform hover:scale-105">
+            Follow us on Instagram
+          </a>
         </div>
       </div>
     </>
@@ -297,8 +297,65 @@ const Home = ({ products, loading, error }: HomeProps) => {
 };
 
 // --- SVG Icons for the Core Values Section ---
-const ShieldIcon = () => ( <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 20.944a11.955 11.955 0 0018 0 12.02 12.02 0 00-3.382-9.016z" /></svg> );
-const LeafIcon = () => ( <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c2.236.447 5 2.236 5 4.472 0 2.236-1.789 4-4 4a8.028 8.028 0 01-5.445-2.083" /></svg> );
-const RupeeIcon = () => ( <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 8h6m-5 4h4m5 4H5.8a1 1 0 00-.9 1.4L9 21M15 3L9 21" /></svg> );
+const ShieldIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-8 w-8 text-cyan-800"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 2l8 4v5c0 5.25-3.5 10.25-8 11-4.5-.75-8-5.75-8-11V6l8-4z"
+    />
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M9 12l2 2 4-4"
+    />
+  </svg>
+);
+
+const LeafIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-8 w-8 text-cyan-800"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+    strokeWidth={2}
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      d="M12 2C9 4 5 8 5 12c0 5 4 8 7 8 3 0 7-3 7-8 0-4-4-8-7-10zM8 15c1 1 3 2 4 2"
+    />
+  </svg>
+);
+
+const RupeeIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-8 w-8"
+    viewBox="0 0 24 24"
+    aria-hidden="true"
+  >
+    <text
+      x="50%"
+      y="50%"
+      fill="currentColor"
+      fontSize="30"
+      fontFamily="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial"
+      textAnchor="middle"
+      dominantBaseline="central"
+    >
+      ₹
+    </text>
+  </svg>
+);
+
 
 export default Home;
