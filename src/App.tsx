@@ -19,8 +19,10 @@ const App = () => {
   return (
    <>
    <Toaster position="top-center" reverseOrder={false} />
-    <Navbar setSearch={setSearch} />
-    <Menubar setMenu={setMenu} />
+    <Navbar setSearch={setSearch} setMenu={setMenu} />
+    <div className="hidden md:block">
+      <Menubar setMenu={setMenu} />
+    </div>
     <Routes>
       <Route path="/" element={<Main search={search} menu={menu} />} />
       <Route path="/product/:id" element={<Details />} />
