@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import guitar from "../assets/guitar.png";
+import CampusKart from "../assets/CampusKart.png";
 import google from "../assets/google.png";
 import { useAuth } from '../context/AuthContext';
 
@@ -188,7 +188,7 @@ const Login = (props: PopupProp) => {
   };
 
   return (
-    <div className="relative z-10" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div className="relative z-50" aria-labelledby="modal-title" role="dialog" aria-modal="true">
       <div className="fixed inset-0 bg-black bg-opacity-75 transition-opacity"></div>
       <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
         <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -200,7 +200,7 @@ const Login = (props: PopupProp) => {
                 </button>
               </div>
               <div className="text-center">
-                <img src={guitar} className="w-20 h-20 mx-auto" alt="Guitar icon"/>
+                <img src={CampusKart} className="w-20 h-20 mx-auto" alt="Campus Kart logo"/>
                 <h3 className="mt-4 text-lg font-medium text-gray-900">
                   {formMode === 'signup' ? 'Create Your Account' : formMode === 'forgot' ? 'Reset Password' : 'Welcome to Campus Kart'}
                 </h3>
