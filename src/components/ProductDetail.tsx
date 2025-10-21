@@ -1,11 +1,9 @@
-// BWU-Kart/src/components/ProductDetail.tsx
-
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Product } from './Main'; // Assuming Product interface is in Main.tsx
+import { Product } from '../types';
 
 const ProductDetail = () => {
-  const { productId } = useParams<{ productId: string }>(); // Get product ID from URL
+  const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

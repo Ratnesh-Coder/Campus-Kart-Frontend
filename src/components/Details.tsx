@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Product } from "./Main";
+import { Product } from "../types";
 
 // New: Define a type for the seller's public info
 interface Seller {
