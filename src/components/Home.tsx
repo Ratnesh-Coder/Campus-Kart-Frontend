@@ -66,7 +66,7 @@ const Home = ({ products, loading, error }: HomeProps) => {
           <h3 className="text-sm font-semibold text-primary-dark uppercase tracking-wider">Our Story</h3>
           <h2 className="mt-2 text-3xl font-extrabold text-neutral-900">The Spark of an Idea</h2>
           <p className="mt-4 text-lg text-neutral-600">
-            Campus Kart was born from a simple need: finding affordable course materials. We realized that countless items on campus—books, notes, lab coats, calculators—were used for just a semester and then left to gather dust. What if there was a way to easily pass them on to other students who needed them? That spark became our mission.
+            RebuZZar was born from a simple need: finding affordable course materials. We realized that countless items on campus—books, notes, lab coats, calculators—were used for just a semester and then left to gather dust. What if there was a way to easily pass them on to other students who needed them? That spark became our mission.
           </p>
           
           <div className="mt-16">
@@ -106,7 +106,7 @@ const Home = ({ products, loading, error }: HomeProps) => {
                 <RupeeIcon />
               </div>
               <h3 className="mt-5 text-xl font-bold text-neutral-800">Student-Friendly Prices</h3>
-              <p className="mt-2 text-base text-neutral-600">We're all on a student budget. Campus Kart helps you find what you need without breaking the bank.</p>
+              <p className="mt-2 text-base text-neutral-600">We're all on a student budget. RebuZZar helps you find what you need without breaking the bank.</p>
             </div>
           </div>
         </div>

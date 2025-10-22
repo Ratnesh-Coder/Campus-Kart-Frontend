@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import BWUKart from '../assets/CampusKart.png'; // Assuming your logo is here
+import RebuZZar from '../assets/RebuZZar.png'; // Assuming your logo is here
 
 const Footer = () => {
   return (
@@ -10,8 +10,8 @@ const Footer = () => {
           {/* Column 1: Logo and Tagline */}
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="flex items-center space-x-2">
-              <img src={BWUKart} alt="Campus Kart Logo" className="h-10 w-auto" />
-              <span className="font-bold text-xl text-white">Campus Kart</span>
+              <img src={RebuZZar} alt="RebuZZar Logo" className="h-10 w-auto" />
+              <span className="font-bold text-xl text-white">RebuZZar</span>
             </Link>
             <p className="mt-4 text-sm text-neutral-400">
               The on-campus marketplace for students to buy and sell educational goods.
@@ -61,14 +61,14 @@ const Footer = () => {
               </li>
               <li className="flex items-start">
                 <EmailIcon />
-                <a href="mailto:contact@shuddhswad.shop" className="ml-3 hover:text-white">contact@shuddhswad.shop</a>
+                <a href="mailto:rebuzzar@gmail.com" className="ml-3 hover:text-white">rebuzzar@gmail.com</a>
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-12 border-t border-neutral-700 pt-8 text-center">
-          <p className="text-sm text-neutral-400">&copy; {new Date().getFullYear()} Campus Kart. All rights reserved.</p>
+          <p className="text-sm text-neutral-400">&copy; {new Date().getFullYear()} RebuZZar. All rights reserved.</p>
         </div>
     </footer>
   );

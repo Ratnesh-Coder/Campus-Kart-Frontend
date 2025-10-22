@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login";
-import CampusKart from "../assets/CampusKart.png";
+import RebuZZar from "../assets/RebuZZar.png";
 
 const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; setMenu: (value: string) => void; }) => {
   const [loginPop, setLoginPop] = useState(false);
@@ -21,14 +21,14 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
 
   return (
     <>
-      <nav className="bg-neutral-100 sticky top-0 z-20 border-b border-neutral-200">
+    <nav className="bg-white sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4">
           {/* --- DESKTOP NAVBAR --- */}
           <div className="hidden md:flex items-center justify-between h-16">
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center space-x-2 group">
-                <img src={CampusKart} alt="Campus Kart Logo" className="h-auto w-14" />
-                <span className="text-xl font-bold text-neutral-800">Campus Kart</span>
+                <img src={RebuZZar} alt="RebuZZar Logo" className="h-auto w-14" />
+                <span className="text-xl font-bold text-neutral-800">RebuZZar</span>
               </Link>
             </div>
             <div className="flex-grow max-w-xl mx-4">
@@ -65,7 +65,7 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
               </button>
             </div>
             <div className="flex-1 flex justify-center">
-              <Link to="/"><img src={CampusKart} alt="Campus Kart Logo" className="h-14 w-auto" /></Link>
+              <Link to="/"><img src={RebuZZar} alt="RebuZZar Logo" className="h-14 w-auto" /></Link>
             </div>
             <div className="flex-1 flex justify-end items-center space-x-2">
               {user ? (

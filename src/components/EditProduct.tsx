@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Product } from './Main';
+import { Product } from '../types';
 
 const EditProduct = () => {
   const { id } = useParams<{ id: string }>();
