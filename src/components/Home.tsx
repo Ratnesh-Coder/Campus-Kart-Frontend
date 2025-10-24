@@ -66,7 +66,7 @@ const Home = ({ products, loading, error }: HomeProps) => {
           <h3 className="text-sm font-semibold text-primary-dark uppercase tracking-wider">Our Story</h3>
           <h2 className="mt-2 text-3xl font-extrabold text-neutral-900">The Spark of an Idea</h2>
           <p className="mt-4 text-lg text-neutral-600">
-            RebuZZar was born from a simple need: finding affordable course materials. We realized that countless items on campus—books, notes, lab coats, calculators—were used for just a semester and then left to gather dust. What if there was a way to easily pass them on to other students who needed them? That spark became our mission.
+            RebuZZar was born from a simple need: finding affordable course materials. We realized that countless items on campus—books, notes, lab coats, calculators, graphics designing kit—were used for just a semester and then left to gather dust. What if there was a way to easily pass them on to other students who needed them? That spark became our mission.
           </p>
           
           <div className="mt-16">

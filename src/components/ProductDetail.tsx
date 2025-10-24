@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Product } from '../types';
+import { logError } from '../utils/logError';
 
 const ProductDetail = () => {
   const { productId } = useParams<{ productId: string }>();
@@ -30,7 +31,7 @@ const ProductDetail = () => {
         setProduct(data);
       } catch (err: any) {
         setError(err.message || 'An unexpected error occurred.');
-        console.error("Error fetching product details:", err);
+        logError('Fetching product details failed', err);
       } finally {
         setLoading(false);
       }

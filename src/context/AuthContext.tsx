@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import { logError } from '../utils/logError';
 
 // Define the shape of the user object
 export interface User {
@@ -6,13 +7,12 @@ export interface User {
   name: string;
   email: string;
   avatar?: string;
+  role: 'student' | 'admin';
   // New University Fields
-  department?: string;
-  programName?: string;
-  section?: string;
-  rollNumber?: string;
   studentCode?: string;
-  registrationNumber?: string;
+  programType?: 'Diploma' | 'UG' | 'PG' | 'PhD';
+  department?: string;
+  year?: '1st' | '2nd' | '3rd' | '4th' | '5th';
 }
 
 // Define the shape of the context
@@ -40,7 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUser(JSON.parse(storedUser));
       }
     } catch (error) {
-      console.error("Failed to parse auth user from local storage", error);
+      logError("Failed to parse auth user from local storage", error);
+      localStorage.removeItem('authUser');
+      localStorage.removeItem('authToken');
     }
   }, []);
 

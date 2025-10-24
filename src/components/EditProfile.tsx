@@ -1,35 +1,114 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import Select, { StylesConfig, SingleValue } from 'react-select';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+const programTypeOptions: SelectOption[] = [
+  { value: 'Diploma', label: 'Diploma' },
+  { value: 'UG', label: 'Undergraduate (UG)' },
+  { value: 'PG', label: 'Postgraduate (PG)' },
+  { value: 'PhD', label: 'Doctorate (PhD)' },
+];
+
+const departmentOptions: Record<string, string[]> = {
+  Diploma: [
+    "Allied Health Sciences", "Civil Engineering", "Computer Science & Engineering",
+    "Electronics & Communication Engineering", "Electrical Engineering",
+    "Mechanical Engineering", "Nursing", "Pharmaceutical Technology"
+  ],
+  UG: [
+    "Agriculture", "Allied Health Sciences", "Biotechnology", "Commerce", "Computational Science",
+    "Computer Science & Engineering", "Computer Science & Engineering CS & DS", "Computer Science and Engineering AI",
+    "Cyber Science & Technology", "Electrical Engineering", "Electronics & Communication Engineering",
+    "English & Literary Studies", "Food & Nutrition", "Hospital Management", "Law", "Management",
+    "Media Science & Journalism", "Mechanical Engineering", "Multimedia", "Nursing",
+    "Pharmaceutical Technology", "Psychology"
+  ],
+  PG: [
+    "Agriculture", "Allied Health Sciences", "Biotechnology", "Commerce", "Computational Science",
+    "Computer Science & Engineering", "Computer Science & Engineering CS & DS", "Computer Science and Engineering AI",
+    "Cyber Science & Technology", "Electronics & Communication Engineering", "English & Literary Studies",
+    "Food & Nutrition", "Hospital Management", "Law", "Management", "Mathematics",
+    "Media Science & Journalism", "Mechanical Engineering", "Multimedia", "Nursing",
+    "Pharmaceutical Technology", "Psychology"
+  ],
+  PhD: [
+    "Biotechnology", "Commerce", "Computational Sciences", "Computer Science & Engineering",
+    "Electronics & Communication Engineering", "English & Literary Studies", "Hospital Management",
+    "Law", "Management", "Mathematics", "Pharmaceutical Technology"
+  ]
+};
+
+const yearOptions: SelectOption[] = [
+  { value: '1st', label: '1st Year' },
+  { value: '2nd', label: '2nd Year' },
+  { value: '3rd', label: '3rd Year' },
+  { value: '4th', label: '4th Year' },
+  { value: '5th', label: '5th Year' },
+];
+
+// React-Select custom styles for neutral theme
+const selectStyles: StylesConfig<SelectOption, false> = {
+  control: (provided, state) => ({
+    ...provided,
+    borderColor: state.isFocused ? '#374151' : '#D1D5DB',
+    boxShadow: state.isFocused ? '0 0 0 1px #374151' : 'none',
+    '&:hover': {
+      borderColor: '#374151',
+    },
+    backgroundColor: 'white',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: '#374151',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? '#374151' : state.isFocused ? '#E5E7EB' : 'white',
+    color: state.isSelected ? 'white' : '#374151',
+    '&:hover': {
+      backgroundColor: '#E5E7EB',
+      color: '#374151',
+    },
+  }),
+  menu: (provided) => ({
+    ...provided,
+    zIndex: 9999,
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: '#6B7280',
+  }),
+};
 
 const EditProfile = () => {
   const { user, token, updateUser } = useAuth();
   const navigate = useNavigate();
 
+  const [programType, setProgramType] = useState(user?.programType || '');
+  const [department, setDepartment] = useState(user?.department || '');
+  const [year, setYear] = useState(user?.year || '');
   const [formData, setFormData] = useState({
-    name: '',
-    department: '',
-    programName: '',
-    section: '',
-    rollNumber: '',
-    studentCode: '',
-    registrationNumber: '',
+    name: user?.name || '',
+    studentCode: user?.studentCode || '',
   });
-  
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (user) {
       setFormData({
         name: user.name || '',
-        department: user.department || '',
-        programName: user.programName || '',
-        section: user.section || '',
-        rollNumber: user.rollNumber || '',
         studentCode: user.studentCode || '',
-        registrationNumber: user.registrationNumber || '',
       });
+      setProgramType(user.programType || '');
+      setDepartment(user.department || '');
+      setYear(user.year || '');
     }
   }, [user]);
 
@@ -44,23 +123,20 @@ const EditProfile = () => {
 
     try {
       const response = await fetch(`http://localhost:5000/api/profile`, {
-          method: 'PUT',
-          headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(formData)
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ ...formData, programType, department, year })
       });
 
       const updatedUserData = await response.json();
-      if (!response.ok) {
-          throw new Error(updatedUserData.message || 'Failed to update profile.');
-      }
+      if (!response.ok) throw new Error(updatedUserData.message || 'Failed to update profile.');
 
       updateUser(updatedUserData);
       toast.success('Profile updated successfully!');
       navigate('/profile');
-
     } catch (err: any) {
       toast.error(err.message);
     } finally {
@@ -72,7 +148,7 @@ const EditProfile = () => {
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-semibold text-neutral-700">You must be logged in to edit your profile.</h2>
-        <Link to="/" className="mt-4 inline-block text-blue-600 hover:underline">Go to Homepage</Link>
+        <Link to="/" className="mt-4 inline-block text-neutral-700 hover:underline">Go to Homepage</Link>
       </div>
     );
   }
@@ -83,114 +159,88 @@ const EditProfile = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-neutral-700">Full Name</label>
-          <input 
-            type="text" 
-            id="name" 
-            name="name" 
-            value={formData.name} 
+          <label className="block text-sm font-medium text-neutral-700">Full Name</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
             placeholder="John Doe"
             required
           />
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="department" className="block text-sm font-medium text-neutral-700">Department</label>
-            <input 
-              type="text" 
-              id="department" 
-              name="department" 
-              value={formData.department} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="Computer Science"
-            />
-          </div>
-          <div>
-            <label htmlFor="programName" className="block text-sm font-medium text-neutral-700">Program Name</label>
-            <input 
-              type="text" 
-              id="programName" 
-              name="programName" 
-              value={formData.programName} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="B.Tech"
-            />
-          </div>
-        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="section" className="block text-sm font-medium text-neutral-700">Section</label>
-            <input 
-              type="text" 
-              id="section" 
-              name="section" 
-              value={formData.section} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="A1"
+            <label className="block text-sm font-medium text-neutral-700">Program Type</label>
+            <Select<SelectOption>
+              options={programTypeOptions}
+              value={programType ? { value: programType, label: programType } : null}
+              onChange={(option: SingleValue<SelectOption>) => {
+                setProgramType(option?.value || '');
+                setDepartment('');
+              }}
+              className="w-full"
+              classNamePrefix="react-select"
+              styles={selectStyles}
+              menuPlacement="auto"
             />
           </div>
-          <div>
-            <label htmlFor="rollNumber" className="block text-sm font-medium text-neutral-700">Roll Number</label>
-            <input 
-              type="text" 
-              id="rollNumber" 
-              name="rollNumber" 
-              value={formData.rollNumber} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="CS2021001"
-            />
-          </div>
+          {programType && (
+            <div>
+              <label className="block text-sm font-medium text-neutral-700">Department</label>
+              <Select<SelectOption>
+                options={departmentOptions[programType].map(d => ({ value: d, label: d }))}
+                value={department ? { value: department, label: department } : null}
+                onChange={(option: SingleValue<SelectOption>) => setDepartment(option?.value || '')}
+                className="w-full"
+                styles={selectStyles}
+                menuPlacement="auto"
+              />
+            </div>
+          )}
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label htmlFor="studentCode" className="block text-sm font-medium text-neutral-700">Student Code</label>
-            <input 
-              type="text" 
-              id="studentCode" 
-              name="studentCode" 
-              value={formData.studentCode} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="STU12345"
-            />
-          </div>
-          <div>
-            <label htmlFor="registrationNumber" className="block text-sm font-medium text-neutral-700">Registration Number</label>
-            <input 
-              type="text" 
-              id="registrationNumber" 
-              name="registrationNumber" 
-              value={formData.registrationNumber} 
-              onChange={handleChange}
-              className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
-              placeholder="REG202101"
-            />
-          </div>
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700">Year</label>
+          <Select<SelectOption>
+            options={yearOptions}
+            value={year ? { value: year, label: year } : null}
+            onChange={(option: SingleValue<SelectOption>) => setYear(option?.value || '')}
+            className="w-full"
+            styles={selectStyles}
+            menuPlacement="auto"
+          />
         </div>
-        
+
+        <div>
+          <label className="block text-sm font-medium text-neutral-700">Student Code</label>
+          <input
+            type="text"
+            name="studentCode"
+            value={formData.studentCode}
+            onChange={handleChange}
+            className="mt-2 block w-full px-4 py-3 border border-neutral-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 text-neutral-700"
+            placeholder="STU12345"
+          />
+        </div>
+
         <div className="flex gap-4">
-            <button 
-              type="button" 
-              onClick={() => navigate('/profile')} 
-              className="w-full flex justify-center py-3 px-4 rounded-lg shadow font-medium text-neutral-700 bg-neutral-200 hover:bg-neutral-300 transition"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit" 
-              disabled={isSubmitting} 
-              className="w-full flex justify-center py-3 px-4 rounded-lg shadow font-medium text-white bg-neutral-700 hover:bg-neutral-800 disabled:bg-neutral-500 transition"            >
-              {isSubmitting ? 'Saving...' : 'Save Changes'}
-            </button>
+          <button
+            type="button"
+            onClick={() => navigate('/profile')}
+            className="w-full flex justify-center py-3 px-4 rounded-lg shadow font-medium text-neutral-700 bg-neutral-200 hover:bg-neutral-300 transition"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full flex justify-center py-3 px-4 rounded-lg shadow font-medium text-white bg-neutral-700 hover:bg-neutral-800 disabled:bg-neutral-500 transition"
+          >
+            {isSubmitting ? 'Saving...' : 'Save Changes'}
+          </button>
         </div>
       </form>
     </div>
