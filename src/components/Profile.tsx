@@ -7,7 +7,7 @@ import EmptyStateIcon from './EmptyStateIcon';
 import { motion } from 'framer-motion';
 
 const Profile = () => {
-  const { user, token, updateUser, logout } = useAuth(); // Added logout
+  const { user, token, updateUser, logout } = useAuth();
   const [userProducts, setUserProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +79,6 @@ const Profile = () => {
   if (!user) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-100 text-center">
-        {/* <h2 className="text-4xl font-extrabold text-neutral-800 mb-2">Access Denied 🚫</h2> */}
         <p className="text-neutral-600 mb-6">Please log in to view your profile.</p>
         <Link
           to="/"
@@ -110,7 +109,7 @@ const Profile = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={() => avatarInputRef.current?.click()}
-                  className="h-28 w-28 rounded-full ring-4 ring-neutral-300 shadow-lg object-cover cursor-pointer transition-all duration-300 mx-auto sm:mx-0"
+                  className="h-28 w-28 rounded-full ring-4 ring-neutral-300 shadow-lg object-cover cursor-pointer mx-auto sm:mx-0"
                   src={user.avatar || 'https://via.placeholder.com/150'}
                   alt="User Avatar"
                 />
@@ -128,7 +127,7 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Buttons: Edit Profile & Logout */}
+            {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-4 sm:mt-0">
               <Link
                 to="/edit-profile"
@@ -157,13 +156,11 @@ const Profile = () => {
             University Information 🎓
           </h2>
           <dl className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10 gap-y-6">
-            {[ 
+            {[
               { label: 'Department', value: user.department },
-              { label: 'Program', value: user.programName },
-              { label: 'Section', value: user.section },
-              { label: 'Roll No.', value: user.rollNumber },
+              { label: 'Program Type', value: user.programType },
+              { label: 'Year', value: user.year },
               { label: 'Student Code', value: user.studentCode },
-              { label: 'Reg. Number', value: user.registrationNumber },
             ]
               .filter(info => info.value)
               .map(info => (
@@ -171,8 +168,7 @@ const Profile = () => {
                   <dt className="text-sm text-neutral-500">{info.label}</dt>
                   <dd className="font-semibold text-neutral-800">{info.value}</dd>
                 </div>
-              ))
-            }
+              ))}
           </dl>
         </motion.div>
 
