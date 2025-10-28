@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
@@ -82,7 +83,7 @@ const Profile = () => {
         return;
       }
       try {
-        const response = await fetch('http://localhost:5000/api/profile/products', {
+        const response = await fetch(`${apiUrl}/api/profile/products`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (!response.ok) throw new Error('Failed to fetch your products');
@@ -103,7 +104,7 @@ const Profile = () => {
   const handleDelete = async (productId: string) => {
     if (!window.confirm('Delete this item? This cannot be undone.')) return;
     try {
-      const response = await fetch(`http://localhost:5000/api/products/${productId}`, {
+      const response = await fetch(`${apiUrl}/api/products/${productId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -128,7 +129,7 @@ const Profile = () => {
     formData.append('avatar', file);
 
     try {
-      const response = await fetch('http://localhost:5000/api/profile/avatar', {
+      const response = await fetch(`${apiUrl}/api/profile/avatar`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData,

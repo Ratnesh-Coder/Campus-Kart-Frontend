@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import Select, { StylesConfig, SingleValue } from 'react-select';
@@ -122,7 +123,7 @@ const EditProfile = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/profile`, {
+      const response = await fetch(`${apiUrl}/api/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

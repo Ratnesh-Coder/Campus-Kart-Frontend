@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -36,7 +37,7 @@ const MyBookings = () => {
       }
 
       try {
-        const response = await fetch(`http://localhost:5000/api/bookings/my-bookings`, {
+        const response = await fetch(`${apiUrl}/api/bookings/my-bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }

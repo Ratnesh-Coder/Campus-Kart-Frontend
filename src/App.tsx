@@ -1,6 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 import { debug } from "./utils/debug";
 import { useAuth } from "./context/AuthContext";
 import AdminRoute from "./components/AdminRoute"; // Eager-load the guard

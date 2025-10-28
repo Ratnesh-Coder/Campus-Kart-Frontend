@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -22,7 +23,7 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProductData = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`${apiUrl}/api/products/${id}`);
         if (!response.ok) {
           throw new Error('Product not found.');
         }
@@ -60,7 +61,7 @@ const EditProduct = () => {
     setError('');
 
     try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+        const response = await fetch(`${apiUrl}/api/products/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

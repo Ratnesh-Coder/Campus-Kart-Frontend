@@ -1,3 +1,4 @@
+const apiUrl = import.meta.env.VITE_API_URL;
 import { useEffect, useState } from "react";
 import Home from "./Home";
 import { Product } from "../types"; 
@@ -22,7 +23,7 @@ const Main = (props: MainProps) => {
         if (search) params.append('search', search);
         if (menu) params.append('category', menu);
         
-        const response = await fetch(`http://localhost:5000/api/products?${params.toString()}`);
+        const response = await fetch(`${apiUrl}/api/products?${params.toString()}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
