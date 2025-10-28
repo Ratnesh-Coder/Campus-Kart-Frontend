@@ -7,11 +7,26 @@ interface AdminRouteProps {
 }
 
 const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
 
-  if (!user) return <Navigate to="/login" replace />;
-  if (user.role !== 'admin') return <Navigate to="/" replace />; // redirect non-admins
+  console.log("AdminRoute receiving:", { user, isLoading });
 
+  // 1. If the auth state is still loading, show a temporary message.
+  if (isLoading) {
+    return <div>Loading user...</div>;
+  }
+
+  // 2. If loading is finished and there's no user, redirect to login.
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 3. If loading is finished and the user is not an admin, redirect to home.
+  if (user.role !== 'admin') {
+    return <Navigate to="/" replace />;
+  }
+  
+  // 4. If loading is finished and the user IS an admin, show the page.
   return <>{children}</>;
 };
 

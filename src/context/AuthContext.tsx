@@ -19,6 +19,7 @@ export interface User {
 interface AuthContextType {
   user: User | null;
   token: string | null;
+  isLoading: boolean;
   login: (userData: User, token: string) => void;
   logout: () => void;
   updateUser: (userData: User) => void;
@@ -29,6 +30,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // On initial load, check local storage for existing session
   useEffect(() => {
@@ -43,6 +45,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       logError("Failed to parse auth user from local storage", error);
       localStorage.removeItem('authUser');
       localStorage.removeItem('authToken');
+    } finally {
+      // This ensures loading is set to false after the check is done.
+      setIsLoading(false);
     }
   }, []);
 
@@ -67,8 +72,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   // ------------------------------------
 
+console.log("AuthProvider providing:", { user, isLoading });
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, updateUser }}>
+    <AuthContext.Provider value={{ user, token, login, logout, updateUser, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

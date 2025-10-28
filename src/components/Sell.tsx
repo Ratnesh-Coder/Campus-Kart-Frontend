@@ -7,8 +7,8 @@ const Sell = () => {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Books");
-  const [image, setImage] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+  const [images, setImages] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -17,18 +17,18 @@ const Sell = () => {
 
   // Preview uploaded image
   useEffect(() => {
-    if (!image) {
-      setPreview(null);
+    if (images.length === 0) {
+      setPreviews([]);
       return;
     }
-    const objectUrl = URL.createObjectURL(image);
-    setPreview(objectUrl);
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [image]);
+    const objectUrls = images.map(file => URL.createObjectURL(file));
+    setPreviews(objectUrls);
+    return () => objectUrls.forEach(url => URL.revokeObjectURL(url));
+  }, [images]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!title || !price || !description || !category || !image) {
+    if (!title || !price || !description || !category || images.length === 0) {
       setError("Please fill in all fields including the image.");
       return;
     }
@@ -45,7 +45,7 @@ const Sell = () => {
     formData.append("price", price);
     formData.append("description", description);
     formData.append("category", category);
-    formData.append("image", image);
+    images.forEach(file => formData.append('images', file));
 
     try {
       const response = await fetch("http://localhost:5000/api/products", {
@@ -148,8 +148,12 @@ const Sell = () => {
           <label className="block text-sm font-medium text-gray-700">Upload Image</label>
           <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
             <div className="space-y-1 text-center">
-              {preview ? (
-                <img src={preview} alt="Image preview" className="mx-auto h-48 w-auto rounded-md" />
+              {previews.length > 0 ? (
+                <div className="flex flex-wrap gap-2 justify-center">
+                  {previews.map((url, idx) => (
+                    <img key={idx} src={url} alt={`Preview ${idx + 1}`} className="h-32 w-auto rounded-md" />
+                  ))}
+                </div>
               ) : (
                 <svg
                   className="mx-auto h-12 w-12 text-gray-400"
@@ -166,6 +170,7 @@ const Sell = () => {
                   />
                 </svg>
               )}
+
               <div className="flex text-sm text-gray-600">
                 <label
                   htmlFor="file-upload"
@@ -176,9 +181,10 @@ const Sell = () => {
                     id="file-upload"
                     name="file-upload"
                     type="file"
-                    className="sr-only"
-                    onChange={(e) => setImage(e.target.files?.[0] || null)}
+                    multiple
+                    onChange={(e) => setImages(Array.from(e.target.files || []))}
                     accept="image/*"
+                    className="sr-only"
                   />
                 </label>
                 <p className="pl-1">or drag and drop</p>

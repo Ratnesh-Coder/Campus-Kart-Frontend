@@ -2,7 +2,8 @@ export interface Product {
   _id: string;
   title: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string[];
+  images?: string[];
   category: string;
   description: string;
   sellerId: string;

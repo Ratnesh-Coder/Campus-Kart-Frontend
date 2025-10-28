@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext"; // ✅ NEW: Import the useCart hook
 import Login from "./Login";
 import RebuZZar from "../assets/RebuZZar.png";
 
@@ -9,6 +10,7 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
   const { user, logout } = useAuth();
+  const { itemCount } = useCart(); // ✅ NEW: Get the item count from the context
 
   const categories = ["All", "Books", "Electronics", "Lab Equipment", "Stationery", "Furniture", "Cycle", "Accessories"];
 
@@ -27,7 +29,7 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
           <div className="hidden md:flex items-center justify-between h-16">
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center space-x-2 group">
-                <img src={RebuZZar} alt="RebuZZar Logo" className="h-auto w-14" />
+                <img src={RebuZZar} alt="RebuZZar Logo" className="h-auto w-14 mt-1" />
                 <span className="text-xl font-bold text-neutral-800">RebuZZar</span>
               </Link>
             </div>
@@ -43,6 +45,17 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              {/* ✅ NEW: Cart Icon for Desktop */}
+              <Link to="/checkout" className="relative p-2 rounded-full hover:bg-neutral-200" title="Cart">
+                <CartIcon />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
+              {/* End of New Cart Icon */}
+              
               {user ? (
                 <>
                   <Link to="/profile" className="p-2 rounded-full hover:bg-neutral-200" title="Profile"><UserIcon /></Link>
@@ -68,6 +81,17 @@ const Navbar = ({ setSearch, setMenu }: { setSearch: (value: string) => void; se
               <Link to="/"><img src={RebuZZar} alt="RebuZZar Logo" className="h-14 w-auto" /></Link>
             </div>
             <div className="flex-1 flex justify-end items-center space-x-2">
+              {/* ✅ NEW: Cart Icon for Mobile */}
+              <Link to="/checkout" className="relative p-2 text-neutral-700" title="Cart">
+                <CartIcon />
+                {itemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {itemCount}
+                  </span>
+                )}
+              </Link>
+              {/* End of New Cart Icon */}
+              
               {user ? (
                 <Link to="/profile" className="p-2 text-neutral-700"><UserIcon /></Link>
               ) : (
@@ -149,6 +173,13 @@ const UserIcon = () => (
 const LogoutIcon = () => (
   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+  </svg>
+);
+
+// ✅ NEW: Cart Icon SVG
+const CartIcon = () => (
+  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
   </svg>
 );
 

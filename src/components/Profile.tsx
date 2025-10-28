@@ -13,6 +13,68 @@ const Profile = () => {
   const [error, setError] = useState<string | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
+  // ========================
+  // Product Images Slider
+  // ========================
+  const ProductImagesSlider = ({
+    images,
+    title,
+  }: {
+    images: string[] | string;
+    title: string;
+  }) => {
+    const imgs = Array.isArray(images) ? images : [images];
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    useEffect(() => {
+      if (imgs.length <= 1) return;
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % imgs.length);
+      }, 3000);
+      return () => clearInterval(interval);
+    }, [imgs]);
+
+    if (imgs.length === 1) {
+      return (
+        <img
+          src={imgs[0]}
+          alt={title}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+      );
+    }
+
+    return (
+      <div className="w-full h-48 overflow-hidden relative bg-neutral-200 flex items-center justify-center rounded-t-3xl">
+        {imgs.map((url, idx) => (
+          <img
+            key={idx}
+            src={url}
+            alt={`${title} ${idx + 1}`}
+            className={`absolute w-full h-full object-cover transition-opacity duration-1000 ${
+              idx === currentIndex ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        ))}
+        {imgs.length > 1 && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {imgs.map((_, idx) => (
+              <span
+                key={idx}
+                className={`h-2 w-2 rounded-full ${
+                  idx === currentIndex ? 'bg-white' : 'bg-gray-400'
+                }`}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  // ========================
+  // Fetch User Products
+  // ========================
   useEffect(() => {
     const fetchUserProducts = async () => {
       if (!user || !token) {
@@ -35,6 +97,9 @@ const Profile = () => {
     fetchUserProducts();
   }, [user, token]);
 
+  // ========================
+  // Delete Product
+  // ========================
   const handleDelete = async (productId: string) => {
     if (!window.confirm('Delete this item? This cannot be undone.')) return;
     try {
@@ -44,13 +109,16 @@ const Profile = () => {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || 'Failed to delete product.');
-      setUserProducts(prev => prev.filter(p => p._id !== productId));
+      setUserProducts((prev) => prev.filter((p) => p._id !== productId));
       toast.success('Item deleted successfully!');
     } catch (err: any) {
       toast.error(`Error: ${err.message}`);
     }
   };
 
+  // ========================
+  // Avatar Upload
+  // ========================
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !token) return;
@@ -162,8 +230,8 @@ const Profile = () => {
               { label: 'Year', value: user.year },
               { label: 'Student Code', value: user.studentCode },
             ]
-              .filter(info => info.value)
-              .map(info => (
+              .filter((info) => info.value)
+              .map((info) => (
                 <div key={info.label}>
                   <dt className="text-sm text-neutral-500">{info.label}</dt>
                   <dd className="font-semibold text-neutral-800">{info.value}</dd>
@@ -196,11 +264,8 @@ const Profile = () => {
                 >
                   <Link to={`/product/${item._id}`}>
                     <div className="aspect-video rounded-t-3xl bg-neutral-100 flex items-center justify-center overflow-hidden">
-                      <img
-                        src={item.imageUrl}
-                        alt={item.title}
-                        className="object-contain max-h-full transition-transform duration-300 group-hover:scale-105"
-                      />
+                      {/* Product Image Slider */}
+                      <ProductImagesSlider images={item.imageUrl} title={item.title} />
                     </div>
                   </Link>
                   <div className="p-5 space-y-3">

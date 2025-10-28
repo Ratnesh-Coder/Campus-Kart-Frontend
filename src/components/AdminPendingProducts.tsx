@@ -23,7 +23,7 @@ const AdminPendingProducts: React.FC = () => {
 
   const fetchPendingProducts = async () => {
     try {
-      const res = await axios.get<Product[]>('/api/admin/products/pending', {
+      const res = await axios.get<Product[]>(`http://localhost:5000/api/admin/products/pending`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProducts(res.data);

@@ -7,17 +7,24 @@ export default defineConfig({
 })
 
 
-
-
-// import { defineConfig } from 'vite'
+// import { defineConfig } from 'vite';
+// import react from '@vitejs/plugin-react';
 
 // export default defineConfig({
+//   plugins: [react()],
 //   server: {
-//     host: true, // allow network access
-//     port: 3000,
-//     strictPort: false,
+//     host: true,
+//     port: 5173,
+//     proxy: {
+//       '/api': {
+//         target: 'http://localhost:5000', // your backend
+//         changeOrigin: true,
+//         secure: false,
+//       },
+//     },
 //     allowedHosts: [
-//       'forklike-unsectarian-madge.ngrok-free.dev', // ngrok URL
-//     ],
-//   },
-// })
+//       'forklike-unsectarian-madge.ngrok-free.dev',
+//       'localhost'
+//     ]
+//   }
+// });
