@@ -42,7 +42,7 @@ const Checkout = () => {
 
     const bookingData = {
       products: cartItems.map((item) => ({
-        productId: item._id,
+        productId: item.productId?.toString(),
         quantity: item.quantity,
         price: item.price,
       })),
@@ -103,7 +103,7 @@ const Checkout = () => {
         <div className="flex flex-col gap-5">
           {cartItems.map((item) => (
             <div
-              key={item._id}
+              key={item.productId?.toString()}
               className="flex flex-col sm:flex-row items-center bg-white p-4 rounded-lg shadow-sm border border-neutral-200"
             >
               {/* Image */}
@@ -127,7 +127,7 @@ const Checkout = () => {
               {/* Quantity + Remove */}
               <div className="flex items-center gap-4 mt-3 sm:mt-0">
                 <button
-                  onClick={() => decreaseQuantity(item._id)}
+                  onClick={() => decreaseQuantity(item.productId?.toString())}
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-800 transition-all"
                 >
                   -
@@ -136,14 +136,14 @@ const Checkout = () => {
                   {item.quantity}
                 </span>
                 <button
-                  onClick={() => increaseQuantity(item._id)}
+                  onClick={() => increaseQuantity(item.productId?.toString())}
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:text-neutral-800 transition-all"
                 >
                   +
                 </button>
 
                 <button
-                  onClick={() => removeFromCart(item._id)}
+                  onClick={() => removeFromCart(item.productId?.toString())}
                   className="text-sm font-medium text-red-500 hover:text-red-700 transition-all flex items-center gap-1"
                 >
                   <TrashIcon /> Remove

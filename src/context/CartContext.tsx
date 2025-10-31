@@ -4,9 +4,13 @@ import { Product } from '../types';
 import toast from 'react-hot-toast';
 import { useAuth } from './AuthContext'; 
 
-// --- TYPE DEFINITIONS (Unchanged) ---
-interface CartItem extends Product {
+interface CartItem {
+  productId: string; // or string | { toString(): string } if you expect ObjectId
+  title: string;
+  price: number;
+  imageUrl?: string[]; 
   quantity: number;
+  sellerId?: string;
 }
 
 interface CartContextType {
@@ -96,7 +100,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
     
     // Optimistic UI update for responsiveness
-    const existingItem = cartItems.find(item => item._id === product._id);
+    const existingItem = cartItems.find(item => item.productId?.toString() === product._id);
     if (existingItem) {
         increaseQuantity(product._id);
         return;
@@ -152,7 +156,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Increase an item's quantity
   const increaseQuantity = (productId: string) => {
-    const item = cartItems.find(i => i._id === productId);
+    const item = cartItems.find(i => i.productId?.toString() === productId);
     if (item) {
       updateItemQuantity(productId, item.quantity + 1);
     }
@@ -160,7 +164,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   // Decrease an item's quantity
   const decreaseQuantity = (productId: string) => {
-    const item = cartItems.find(i => i._id === productId);
+    const item = cartItems.find(i => i.productId?.toString() === productId);
     // The backend handles removal if quantity becomes 0 or less
     if (item) {
       updateItemQuantity(productId, item.quantity - 1);
