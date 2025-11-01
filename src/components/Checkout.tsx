@@ -32,43 +32,46 @@ const Checkout = () => {
   } = useCart();
   const navigate = useNavigate();
 
-  // ✅ Handle booking (unchanged)
-  const handleBooking = async () => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      toast.error('Please login to proceed.');
-      return navigate('/login');
-    }
+  // ✅ Handle booking (enhanced with bookingId navigation)
+const handleBooking = async () => {
+  const token = localStorage.getItem('authToken');
+  if (!token) {
+    toast.error('Please login to proceed.');
+    return navigate('/login');
+  }
 
-    const bookingData = {
-      products: cartItems.map((item) => ({
-        productId: item.productId?.toString(),
-        quantity: item.quantity,
-        price: item.price,
-      })),
-      totalPrice,
-    };
-
-    try {
-      const res = await fetch(`${apiUrl}/api/bookings/create`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(bookingData),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.message || 'Booking failed');
-
-      toast.success('Booking successful! ✅');
-      clearCart();
-      navigate('/booking-success');
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Something went wrong');
-    }
+  const bookingData = {
+    products: cartItems.map((item) => ({
+      productId: item.productId?.toString(),
+      quantity: item.quantity,
+      price: item.price,
+    })),
+    totalPrice,
   };
+
+  try {
+    const res = await fetch(`${apiUrl}/api/bookings/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(bookingData),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Booking failed');
+
+    toast.success('Booking successful! ✅');
+    clearCart();
+
+    // ✅ Navigate to success page with bookingId
+    navigate('/booking-success', { state: { bookingId: data.bookingId } });
+  } catch (error) {
+    toast.error(error instanceof Error ? error.message : 'Something went wrong');
+  }
+};
+
 
   // --- EMPTY CART VIEW (unchanged) ---
   if (cartItems.length === 0) {
@@ -161,7 +164,7 @@ const Checkout = () => {
           </p>
           <div className="flex justify-between mb-3">
             <span>Subtotal</span>
-            <span>₹1000</span>
+            <span>₹{totalPrice}</span>
           </div>
           <div className="flex justify-between mb-3">
             <span>Shipping</span>
@@ -169,7 +172,7 @@ const Checkout = () => {
           </div>
           <div className="flex justify-between text-lg font-bold border-t pt-3">
             <span>Total</span>
-            <span>₹1000</span>
+            <span>₹{totalPrice}</span>
           </div>
           <p className="text-xs text-gray-400 text-center mt-5">
             By placing this booking, you agree to our terms & cancellation policies.

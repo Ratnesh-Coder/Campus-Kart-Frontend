@@ -1,5 +1,6 @@
 import { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { logError } from '../utils/logError';
+import { jwtDecode } from 'jwt-decode';
 
 // Define the shape of the user object
 export interface User {
@@ -33,23 +34,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   // On initial load, check local storage for existing session
-  useEffect(() => {
-    try {
-      const storedToken = localStorage.getItem('authToken');
-      const storedUser = localStorage.getItem('authUser');
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
+useEffect(() => {
+  try {
+    const storedToken = localStorage.getItem('authToken');
+    const storedUser = localStorage.getItem('authUser');
+
+    if (storedToken && storedUser) {
+      try {
+        // Decode token and check expiration
+        const decoded = jwtDecode<{ exp: number }>(storedToken);
+        if (decoded.exp * 1000 > Date.now()) {
+          // Token is valid
+          setToken(storedToken);
+          setUser(JSON.parse(storedUser));
+        } else {
+          // Token expired → logout
+          logout();
+        }
+      } catch (err) {
+        // Invalid token format → logout
+        logout();
       }
-    } catch (error) {
-      logError("Failed to parse auth user from local storage", error);
-      localStorage.removeItem('authUser');
-      localStorage.removeItem('authToken');
-    } finally {
-      // This ensures loading is set to false after the check is done.
-      setIsLoading(false);
     }
-  }, []);
+  } catch (error) {
+    logError("Failed to parse auth user from local storage", error);
+    localStorage.removeItem('authUser');
+    localStorage.removeItem('authToken');
+  } finally {
+    // This ensures loading is set to false after the check is done.
+    setIsLoading(false);
+  }
+}, []);
 
   const login = (userData: User, token: string) => {
     setUser(userData);
